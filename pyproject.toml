@@ -1,0 +1,6 @@
+[project]
+name = "cyto_ml"
+version = "0.1"
+description = "This package supports the processing and analysis of plankton sample data"
+readme = "README.md"
+requires-python = "<3.10"
