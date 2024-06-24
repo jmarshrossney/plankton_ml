@@ -1,0 +1,18 @@
+name: cyto_39
+channels:
+  - conda-forge
+dependencies:
+  - numpy
+  - pandas
+  - s3fs
+  - matplotlib
+  - python-dotenv
+  - dask
+  - pip:
+    - pytest
+    - torch==1.10.0 # install before cefas_scivision; it needs this version
+    - scivision
+    - scikit-image
+    - intake # for scivision data
+    - git+https://github.com/alan-turing-institute/plankton-cefas-scivision@main # torch version
+    - chromadb
