@@ -9,7 +9,7 @@ def image_dir():
     Existing directory of images
     """
     return os.path.join(
-        os.path.abspath(os.path.dirname(__file__)), "../Data/test_images/"
+        os.path.abspath(os.path.dirname(__file__)), "fixtures/test_images/"
     )
 
 
