@@ -1,8 +1,8 @@
-# [insert name here] 
+# Plankton ML
 
-This repository contains code and configuration for processing and analysing images of plankton samples. 
+This repository contains code and configuration for processing and analysing images of plankton samples. It's experimental, serving as much as a proposed template for new projects than as a project in itself.
 
-It's a sister project to an image annotation app that is not yet released, written by researchers and data scientists at the UK Centre for Ecology and Hydrology in the early stages of a collaborative project that wasn't taken forward.
+It's a companion project to an R-shiny based image annotation app that is not yet released, written by researchers and data scientists at the UK Centre for Ecology and Hydrology in the early stages of a collaboration that was placed on hold.
 
 ## Installation
 
