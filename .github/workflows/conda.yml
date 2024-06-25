@@ -15,6 +15,7 @@ jobs:
         os: ["ubuntu-latest"]
         python-version: ["3.9"]
     steps:
+      - uses: actions/checkout@v4
       - uses: conda-incubator/setup-miniconda@v3
         with:
           auto-update-conda: true
@@ -22,9 +23,6 @@ jobs:
           activate-environment: cyto_39
           environment-file: environment.yml
           auto-activate-base: false
-      - name: Conda info
-        shell: bash -el {0}
-        run: conda info
-      - name: Conda list
-        shell: pwsh
-        run: conda list
+      - run: |
+          conda info
+          conda list
