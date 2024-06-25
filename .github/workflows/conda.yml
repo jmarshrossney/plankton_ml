@@ -26,6 +26,5 @@ jobs:
           python-version: ${{ matrix.python-version }}
           auto-activate-base: false
       - run: |
-          conda info
-          conda list
-          python -m pytest -vs
+          pip install pytest-cov
+          python -m pytest --cov=cyto_ml tests/
