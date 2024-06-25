@@ -9,6 +9,9 @@ jobs:
   example-1:
     name: Ex1 (${{ matrix.python-version }}, ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash -el {0}
     strategy:
       fail-fast: false
       matrix:
@@ -18,10 +21,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: conda-incubator/setup-miniconda@v3
         with:
-          auto-update-conda: true
-          python-version: ${{ matrix.python-version }}
           activate-environment: cyto_39
           environment-file: environment.yml
+          python-version: ${{ matrix.python-version }}
           auto-activate-base: false
       - run: |
           conda info
