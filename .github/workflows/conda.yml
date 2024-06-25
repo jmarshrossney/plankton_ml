@@ -1,7 +1,5 @@
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -27,7 +25,11 @@ jobs:
           auto-activate-base: false
       - run: pip install pytest-cov
       - run: python -m pytest --cov=cyto_ml --cov-report xml:coverage.xml tests/
-      - uses: actions/upload-artifact@v4
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test coverage report
+        uses: orgoro/coverage@v3.1
         with:
-          name: coverage.xml
-          path: coverage.xml
+          coverageFile: coverage.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
