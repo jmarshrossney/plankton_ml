@@ -28,11 +28,3 @@ jobs:
       - run: |
           pip install pytest-cov
           python -m pytest --cov=cyto_ml --cov-report xml:coverage.xml tests/
-  coverage:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Test coverage report
-        uses: orgoro/coverage@v3.1
-        with:
-          coverageFile: coverage.xml
-          token: ${{ secrets.GITHUB_TOKEN }}
