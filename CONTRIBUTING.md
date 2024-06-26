@@ -7,4 +7,11 @@ This is a small prototype but we welcome contributions to it.
 * Please contribute a test that covers your changes
 * Please provide brief instructions to a reviewer about how to exercise your code
 
+## TODO 
+
+* add a friendly reference for relative beginners on pull requests / git workflow with a link to a Discussion where UKCEH people can come with queries
+* add a reference on good style for git commit messages
+* link to examples of projects with reasonable test coverage
+
+
 Thank you for thinking about contributing <3
