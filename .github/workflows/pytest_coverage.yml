@@ -1,7 +1,5 @@
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -31,3 +29,15 @@ jobs:
         with:
           name: coverage.xml
           path: coverage.xml
+  coverage:
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: coverage.xml
+      - name: Test coverage report
+        uses: orgoro/coverage@v3.1
+        with:
+          coverageFile: coverage.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
