@@ -3,10 +3,11 @@ for trial use with `scivision`:
 https://scivision.readthedocs.io/en/latest/api.html#scivision.io.reader.load_dataset
 https://intake.readthedocs.io/en/latest/catalog.html#yaml-format
 
-See also https://github.com/intake/intake-stac 
+See also https://github.com/intake/intake-stac
 Via https://gallery.pangeo.io/repos/pangeo-data/pangeo-tutorial-gallery/intake.html#Build-an-intake-catalog
 
 """
+
 from cyto_ml.data.intake import intake_yaml
 from cyto_ml.data.s3 import s3_endpoint
 import pandas as pd
@@ -37,7 +38,7 @@ if __name__ == "__main__":
         # out.write(write_yaml(f"{os.environ['ENDPOINT']}/{catalog}"))
 
         # All the scivision examples have image collections in a single zipfile
-        # This format throws an s3 error on the directory listing - 
+        # This format throws an s3 error on the directory listing -
         # unsure if this is a permissions issue, or you just can't use a wildcard
         cat_wildcard = f"{os.environ['ENDPOINT']}/untagged-images/*.tif"  # .replace('https://', 's3://')
 

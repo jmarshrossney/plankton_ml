@@ -2,7 +2,6 @@ import os
 import pytest
 
 
-
 @pytest.fixture
 def image_dir():
     """

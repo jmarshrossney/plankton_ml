@@ -15,14 +15,14 @@ def intake_yaml(
 sources:
   test_image:
     description: Single test image from the plankton collection
-    origin: 
+    origin:
     driver: intake_xarray.image.ImageSource
     args:
       urlpath: ["{test_url}"]
       exif_tags: False
   plankton:
     description: A CSV index of all the images of plankton
-    origin: 
+    origin:
     driver: intake.source.csv.CSVSource
     args:
       urlpath: ["{catalog_url}"]
