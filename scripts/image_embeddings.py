@@ -1,6 +1,7 @@
 """Try to use the scivision pretrained model and tools against this collection"""
 
 import os
+import logging
 from dotenv import load_dotenv
 from cyto_ml.models.scivision import (
     load_model,
@@ -13,6 +14,7 @@ from cyto_ml.data.vectorstore import vector_store
 from scivision import load_dataset
 from intake_xarray import ImageSource
 
+logging.basicConfig(level=logging.info)
 load_dotenv()
 
 
@@ -37,8 +39,20 @@ if __name__ == "__main__":
     # Come back and refine this if the next parts work!
 
     def store_embeddings(row):
-        image_data = ImageSource(row.Filename).to_dask()
+        try:
+            image_data = ImageSource(row.Filename).to_dask()
+        except ValueError as err:
+            # TODO diagnose and fix for this happening, in rare circumstances:
+            # (would be nice to know rather than just buffer the image and add code)
+            # File "python3.9/site-packages/PIL/PcdImagePlugin.py", line 34, in _open
+            #   self.fp.seek(2048)
+            # File "python3.9/site-packages/fsspec/implementations/http.py", line 745, in seek
+            # raise ValueError("Cannot seek streaming HTTP file")
+            logging.info(err)
+            return
+
         embeddings = flat_embeddings(model(prepare_image(image_data)))
+
         collection.add(
             documents=[row.Filename],
             embeddings=[embeddings],
