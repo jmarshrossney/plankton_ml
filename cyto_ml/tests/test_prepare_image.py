@@ -11,7 +11,7 @@ from cyto_ml.models.scivision import prepare_image
 def test_single_image(single_image):
 
     image_data = ImageSource(single_image).to_dask()
-    # Prepare the image
+    # Tensorise the image (potentially normalise if we have useful values)
     prepared_image = prepare_image(image_data)
 
     # Check if the shape is correct (batch dimension added)
