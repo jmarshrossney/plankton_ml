@@ -49,6 +49,7 @@ if __name__ == "__main__":
             # File "python3.9/site-packages/fsspec/implementations/http.py", line 745, in seek
             # raise ValueError("Cannot seek streaming HTTP file")
             logging.info(err)
+            logging.info(row.Filename)
             return
 
         embeddings = flat_embeddings(model(prepare_image(image_data)))
