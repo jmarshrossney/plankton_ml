@@ -4,7 +4,9 @@ import torch
 import torchvision
 from xarray import DataArray
 
-SCIVISION_URL = "https://github.com/alan-turing-institute/plankton-cefas-scivision"
+SCIVISION_URL = (
+    "https://github.com/alan-turing-institute/plankton-cefas-scivision"  # noqa: E501
+)
 
 
 def load_model(url: str):
