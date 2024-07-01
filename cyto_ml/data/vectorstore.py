@@ -1,11 +1,18 @@
 import chromadb
 from chromadb.db.base import UniqueConstraintError
+from chromadb.config import Settings
+
 from typing import Optional
 import logging
 
 logging.basicConfig(level=logging.INFO)
 
-client = chromadb.PersistentClient(path="./vectors")
+client = chromadb.PersistentClient(
+    path="./vectors",
+    settings=Settings(
+        anonymized_telemetry=False,
+    ),
+)
 
 
 def vector_store(name: Optional[str] = "test_collection"):

@@ -1,5 +1,9 @@
-from cyto_ml.data.vectorstore import vector_store
+from cyto_ml.data.vectorstore import vector_store, client
 import numpy as np
+
+
+def test_client_no_telemetry():
+    assert not client.get_settings()["anonymized_telemetry"]
 
 
 def test_store():
