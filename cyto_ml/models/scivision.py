@@ -42,7 +42,9 @@ def prepare_image(image: DataArray):
     c) Uses a CUDA device if available
     """
     # Convert the image data to a PyTorch tensor
-    tensor_image = torchvision.transforms.ToTensor()(image.to_numpy())
+    if hasattr(image, 'to_numpy'):
+        image = image.to_numpy()
+    tensor_image = torchvision.transforms.ToTensor()(image)
 
     # Check if the input is a single image or a batch
     if len(tensor_image.shape) == 3:
