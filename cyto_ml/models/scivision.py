@@ -42,7 +42,7 @@ def prepare_image(image: DataArray):
     c) Uses a CUDA device if available
     """
     # Convert the image data to a PyTorch tensor
-    if hasattr(image, 'to_numpy'):
+    if hasattr(image, "to_numpy"):
         image = image.to_numpy()
     tensor_image = torchvision.transforms.ToTensor()(image)
 
