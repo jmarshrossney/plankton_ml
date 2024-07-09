@@ -1,0 +1,32 @@
+# http://www.graphviz.org/content/cluster
+
+digraph G {
+  rankdir=LR;
+  graph [fontname = "Handlee"];
+  node [fontname = "Handlee"];
+  edge [fontname = "Handlee"];
+
+  bgcolor=transparent;
+
+  scope [shape=rect label="Microscope \n(FlowCam)"];
+  pc [shape=rect label="Local PC"]
+  
+  scope2 [shape=rect label="Microscope \n(Flow Cytometer"];
+  pc2 [shape=rect label="Local PC"]
+  
+  san [shape=cylinder label="SAN \nprivate cloud"]
+  vm [shape=rect label="VM \nprivate cloud"]
+  store [shape=cylinder label="S3 \nobject store"]
+
+  vm->store [label="triggered by app?" fontsize=10];
+  scope->pc
+  scope2->pc2
+  
+  pc2->san [label="physically, via USB stick", fontsize=10];
+  pc->san [label="physically, via USB stick", fontsize=10];
+  
+  
+  san->vm [dir=back] [label="manually run script" fontsize=10]; 
+
+}
+
