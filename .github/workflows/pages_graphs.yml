@@ -1,0 +1,16 @@
+name: Graphviz re-render
+on: 
+  push:
+    paths: 'docs/diagrams/**/*'
+
+jobs:
+  test:
+    name: Test on node ${{ matrix.node-version }} and ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup Graphviz
+      uses: ts-graphviz/setup-graphviz@v2
