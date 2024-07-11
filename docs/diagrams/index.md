@@ -8,7 +8,6 @@ title: Plankton ML - workflow diagrams
 
 # Workflow Diagrams
 
-
 ![From imaging instrument to cloud storage](as_is/instrument_to_store.svg) - as is
 ![From imaging instrument to cloud storage](could_be/instrument_to_store.svg) - as is
 
