@@ -11,7 +11,7 @@ for sub_dir in "$DIR"*/; do
     for dotfile in "$sub_dir"*.dot; do
         # Get the base name without extension
         base_name=$(basename "$dotfile" .dot)
-        dir_path=${sub_dir//diagrams/..\/_site\/diagrams}
+        dir_path=${sub_dir//diagrams/_site\/diagrams}
         mkdir -p $dir_path
         output="$dir_path$base_name.svg"
 
