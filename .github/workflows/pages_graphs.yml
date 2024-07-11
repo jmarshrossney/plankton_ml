@@ -20,14 +20,10 @@ jobs:
       run:
         working-directory: docs
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-#    - name: Graphviz
-#      uses: ts-graphviz/setup-graphviz@v2
-#        run: |
-#          chmod +x ./scripts/render_diagrams.sh
-#          ./scripts/render_diagrams.sh
-#        shell: bash
+    - uses: actions/checkout@v4
+    - uses: ts-graphviz/setup-graphviz@v2
+    - name: Diagrams
+      run: chmod +x ./scripts/render_diagrams.sh; ./scripts/render_diagrams.sh
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
