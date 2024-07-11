@@ -2,7 +2,7 @@
 # Copilot generated script to render diagrams as SVG
 
 # Set the directory path
-DIR="./docs/diagrams/"
+DIR="./diagrams/"
 SITE="_site/"
 
 # Loop through each subdirectory
