@@ -6,6 +6,19 @@ layout: home
 title: Plankton ML - workflow diagrams
 ---
 
+<!-- workaround to make diagrams responsive to dark mode -->
+<style type="text/css">
+svg { fill: currentColor }
+
+path {
+    fill: black;
+}
+
+@media (prefers-color-scheme: dark) {
+    path { fill: white; }
+}
+</style>
+
 # Workflow Diagrams
 
 
