@@ -6,26 +6,24 @@ layout: home
 title: Plankton ML - workflow diagrams
 ---
 
-<!-- workaround to make diagrams responsive to dark mode -->
-<style type="text/css">
-svg { fill: currentColor }
-
-path {
-    fill: black;
-}
-
-@media (prefers-color-scheme: dark) {
-    path { fill: white; }
-}
-</style>
-
 # Workflow Diagrams
 
+Views of the flow of data from the imaging instrument to cloud-accessible storage
 
-As-is and Could-be views of the flow of data from the imaging instrument to cloud-accessible storage
+### As is
 
-![From imaging instrument to cloud storage](as_is/instrument_to_store.svg) - as is
-![From imaging instrument to cloud storage](could_be/instrument_to_store.svg) - as is
+Data saved during a session with the microscope is downloaded onto a USB key, then uploaded from a researcher's laptop into a shared storage area on a site-specific SAN.
 
+Later, a data scientist logs into a virtual machine in the on-premise "private cloud" and runs more than one script to read the data, process it for analysis, and then upload to s3 storage hosted at JASMIN. Authorisation in this chain requires personal credentials.
+
+<object data="as_is/instrument_to_store.svg" type="image/svg+xml">
+</object>
+
+There are file naming conventions including metadata which doesn't follow the same path as the data, and there are spatio-temporal properties of the samples which could be recorded.
+
+### Could be 
+
+<object data="could_be/instrument_to_store.svg" type="image/svg+xml">
+</object>
 
 
