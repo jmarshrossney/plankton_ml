@@ -23,6 +23,10 @@ There are file naming conventions including metadata which doesn't follow the sa
 
 ### Could be 
 
+PC that drives the instrument is connected to the storage network, but not the internet (for security standards compliance reasons). What are the current precedents for either directly saving output to shared storage, or a watcher process that either pulls or pushes data from a lab PC to networked storage?
+
+Automated workflow (could be Apache Airflow or Beam based - FDRI project is trialling components) which watches for new source data, distributes the preprocessing with Dask or Spark if necessary, and publishes analysis-ready data _and metadata_ to cloud storage, continuously.
+
 <object data="could_be/instrument_to_store.svg" type="image/svg+xml">
 </object>
 

@@ -11,7 +11,7 @@ digraph G {
   scope [shape=rect label="Microscope \n(FlowCam)"];
   pc [shape=rect label="Local PC"]
   
-  scope2 [shape=rect label="Microscope \n(Flow Cytometer"];
+  scope2 [shape=rect label="Laser imaging \n(Flow Cytometer)"];
   pc2 [shape=rect label="Local PC"]
   
   san [shape=cylinder label="SAN \nprivate cloud"]
