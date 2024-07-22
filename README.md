@@ -41,6 +41,20 @@ Get started by cloning this repository and running
 
 Experiment testing workflows by using [this plankton model from SciVision](https://sci.vision/#/model/resnet50-plankton) to extract features from images for use in similarity search, clustering, etc.
 
+### Running Jupyter notebooks
+
+The `notebooks/` directory contains Markdown (`.md`) representations of the notebooks.
+To create Jupyter notebooks (`.ipynb`), run the following command with the conda environment activated:
+
+```sh
+jupytext --sync notebooks/*
+```
+
+If you modify the contents of a notebook, run the command after closing the notebook to re-sync the `.ipynb` and `.md` representations before committing.
+
+For more information see the [Jupytext docs](https://jupytext.readthedocs.io/en/latest/).
+
+
 ### TBC (object store upload, derived classifiers, etc)
 
 
