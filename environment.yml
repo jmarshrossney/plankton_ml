@@ -1,4 +1,4 @@
-name: test
+name: cyto_39
 channels:
   - pytorch
   - conda-forge
