@@ -1,4 +1,4 @@
-title: Discoverability
+title: Plankton ML / pipelines
 email: jowals@ceh.ac.uk
 description: >- # this means to ignore newlines until "baseurl:"
   This repository contains code, proof of concepts, test cases and workflows for low-investment methods to apply image machine learning to plankton characterisation.
