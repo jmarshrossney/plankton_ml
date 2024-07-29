@@ -1,21 +1,20 @@
 name: cyto_39
 channels:
+  - pytorch
   - conda-forge
+  - defaults
 dependencies:
-  - numpy
+  - python=3.9
+  - pytorch=1.10.0
+  - mkl=2024.0
+  - chromadb=0.5.3
+  - intake-xarray
+  - scikit-image
   - pandas
-  - s3fs
-  - matplotlib
+  - pytest
   - python-dotenv
-  - dask
+  - s3fs
+  - pip
   - pip:
-    - pytest
-    - imagecodecs
-    - intake # for reading scivision
-    - torch==1.10.0 # install before cefas_scivision; it needs this version
     - scivision
-    - scikit-image
-    - setuptools==69.5.1 # because this bug https://github.com/pytorch/serve/issues/3176
-    - tiffile
-    - git+https://github.com/alan-turing-institute/plankton-cefas-scivision@main # torch version
-    - chromadb
+    - git+https://github.com/alan-turing-institute/plankton-cefas-scivision@main
