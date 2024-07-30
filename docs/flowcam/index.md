@@ -25,7 +25,7 @@ The diluted sample runs through the hose and between this flat section with two 
 Sampling through analysis involves swirling a hose through the water while it pumps through the flat section at an adjustable pressure.
 
 <video height="640" controls>
-  <source src="images/YouCut_20240729_123745260.mp4" type="video/mp4"/>
+  <source src="images/YouCut_20240729_124027460.mp4" type="video/mp4"/>
   
 </video>
 
