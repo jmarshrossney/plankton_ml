@@ -4,5 +4,9 @@ version = "0.1"
 description = "This package supports the processing and analysis of plankton sample data"
 readme = "README.md"
 requires-python = "==3.9.*"
+
 [tool.setuptools]
 py-modules = []
+
+[tool.jupytext]
+formats = "ipynb,md"
