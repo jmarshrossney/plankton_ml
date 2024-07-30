@@ -31,3 +31,10 @@ def image_batch(image_dir):
 @pytest.fixture
 def scivision_model():
     return truncate_model(load_model(SCIVISION_URL))
+
+
+@pytest.fixture
+def env_endpoint():
+    """None if ENDPOINT is not set in environment,
+    utility for skipping integration-type tests"""
+    return os.environ.get("ENDPOINT", None)
