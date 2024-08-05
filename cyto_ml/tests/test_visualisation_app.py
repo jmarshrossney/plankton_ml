@@ -1,5 +1,5 @@
 """
-Unit tets for the visualisation application.
+Unit tests for the visualisation application.
 """
 
 from unittest import TestCase, mock
