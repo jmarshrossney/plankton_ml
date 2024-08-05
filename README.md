@@ -11,11 +11,10 @@ It's a companion project to an R-shiny based image annotation app that is not ye
 Use anaconda or miniconda to create a python environment using the included `environment.yml`
 
 ```
-conda create -n cyto_39 python=3.9
-conda env update
+conda env create -f environment.yml
 ```
 
-Please note that this is specifically pinned to python 3.9 due to dependency versions; we make experimental use of the [https://sci.vision/#/model/resnet50-plankton](CEFAS plankton model available through SciVision), which in turn uses an older version of pytorch that isn't packaged above python 3.9.
+Please note that this is specifically pinned to python 3.9 due to dependency versions; we make experimental use of the [CEFAS plankton model available through SciVision](https://sci.vision/#/model/resnet50-plankton), which in turn uses an older version of pytorch that isn't packaged above python 3.9.
 
 ### Object store connection
 
@@ -40,7 +39,21 @@ Get started by cloning this repository and running
 
 ### Feature extraction
 
-Experiment testing workflows by using [https://sci.vision/#/model/resnet50-plankton](this plankton model from SciVision) to extract features from images for use in similarity search, clustering, etc. 
+Experiment testing workflows by using [this plankton model from SciVision](https://sci.vision/#/model/resnet50-plankton) to extract features from images for use in similarity search, clustering, etc.
+
+### Running Jupyter notebooks
+
+The `notebooks/` directory contains Markdown (`.md`) representations of the notebooks.
+To create Jupyter notebooks (`.ipynb`), run the following command with the conda environment activated:
+
+```sh
+jupytext --sync notebooks/*
+```
+
+If you modify the contents of a notebook, run the command after closing the notebook to re-sync the `.ipynb` and `.md` representations before committing.
+
+For more information see the [Jupytext docs](https://jupytext.readthedocs.io/en/latest/).
+
 
 ### TBC (object store upload, derived classifiers, etc)
 
