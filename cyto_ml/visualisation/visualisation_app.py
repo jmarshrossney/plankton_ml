@@ -8,10 +8,13 @@ based on their embeddings from a deep learning model
 
 """
 
-import os
-import chromadb
+import random
+from cyto_ml.data.vectorstore import vector_store
 import pandas as pd
+import requests
+from io import BytesIO
 
+from PIL import Image
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
@@ -20,28 +23,17 @@ from dotenv import load_dotenv
 import intake
 
 load_dotenv()
-CDB = None
-
-
-def get_chroma_client() -> chromadb.Client:
-    """
-    Retrieve or instantiate the chromadb client.
-    """
-    global CDB
-    if CDB is None:
-        CDB = chromadb.HttpClient(host="localhost", port=8000)
-    return CDB
 
 
 @st.cache_data
-def get_embeddings(collection_name: str) -> list:
+def image_ids(collection_name: str) -> list:
     """
     Retrieve image embeddings from chroma database.
     TODO Revisit our available metadata
     """
-    collection = get_chroma_client().get_collection(collection_name)
-    result = collection.get(include=["embeddings"])
-    return result["embeddings"]
+    collection = vector_store(collection_name)
+    result = collection.get()
+    return result["ids"]
 
 
 @st.cache_data
@@ -84,13 +76,23 @@ def main() -> None:
     st.title("Plankton image embeddings")
     col1, col2 = st.columns([3, 1])
 
-    catalog = "untagged-images-lana/intake.yml"
+    # catalog = "untagged-images-lana/intake.yml"
+    # catalog_url = f"{os.environ.get('ENDPOINT')}/{catalog}"
+    # ds = intake_dataset(catalog_url)
+    # This way we've got a dataframe of the whole catalogue
+    # Do we gain even slightly from this when we have the same index in the embeddings
+    # index = ds.plankton().to_dask().compute()
 
-    catalog_url = f"{os.environ.get('ENDPOINT')}/{catalog}"
-    ds = intake_dataset(catalog_url)
+    ids = image_ids("plankton")
+    test_image_url = random.choice(ids)
+    # TODO clean this up
+    store = vector_store("plankton")
+    # do we even need these
+    _ = store.get([test_image_url], include=["embeddings"])["embeddings"]
 
-    test_image = ds.test_image.to_dask().compute()
-    st.image(test_image)
+    # TODO error handling
+    response = requests.get(test_image_url)
+    st.image(Image.open(BytesIO(response.content)))
 
 
 if __name__ == "__main__":

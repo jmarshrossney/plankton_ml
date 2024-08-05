@@ -37,7 +37,7 @@ class TestClusteringApp(TestCase):
         mimic user interactions with the visualisation.
         """
         with mock.patch(
-            "cyto_ml.visualisation.visualisation_app.get_embeddings",
+            "cyto_ml.visualisation.visualisation_app.image_ids",
             return_value=self.data,
         ):
             AppTest.from_file("cyto_ml/visualisation/visualisation_app.py").run(
