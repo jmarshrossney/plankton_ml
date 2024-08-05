@@ -20,9 +20,12 @@ import plotly.graph_objects as go
 import streamlit as st
 from scivision import load_dataset
 from dotenv import load_dotenv
+from typing import Optional
 import intake
 
 load_dotenv()
+
+STORE = vector_store("plankton")
 
 
 @st.cache_data
@@ -31,16 +34,33 @@ def image_ids(collection_name: str) -> list:
     Retrieve image embeddings from chroma database.
     TODO Revisit our available metadata
     """
-    collection = vector_store(collection_name)
-    result = collection.get()
+    result = STORE.get()
     return result["ids"]
 
 
 @st.cache_data
-def intake_dataset(catalog_yml) -> intake.catalog.local.YAMLFileCatalog:
+def intake_dataset(catalog_yml: str) -> intake.catalog.local.YAMLFileCatalog:
 
     dataset = load_dataset(catalog_yml)
     return dataset
+
+
+def closest_n(url: str, n: Optional[int] = 26) -> list:
+    embed = STORE.get([url], include=["embeddings"])["embeddings"]
+    results = STORE.query(query_embeddings=embed, n_results=n)
+    return results["ids"][0]  # by index because API assumes query always multiple
+
+
+def closest_grid(start_url: str, rows: list):
+    closest = closest_n(start_url)
+    # TODO error handling
+
+    for index, r in enumerate(rows):
+        for c in rows[index]:
+            # TODO cache for this
+            response = requests.get(closest.pop())
+
+            c.image(Image.open(BytesIO(response.content)))
 
 
 def create_figure(df: pd.DataFrame) -> go.Figure:
@@ -74,7 +94,11 @@ def main() -> None:
     """
     st.set_page_config(layout="wide", page_title="Plankton image embeddings")
     st.title("Plankton image embeddings")
-    col1, col2 = st.columns([3, 1])
+    # it starts much slower on adding this
+    # the generated HTML is not lovely at all
+    rows = []
+    for i in range(0, 5):
+        rows.append(st.columns(5))
 
     # catalog = "untagged-images-lana/intake.yml"
     # catalog_url = f"{os.environ.get('ENDPOINT')}/{catalog}"
@@ -84,15 +108,12 @@ def main() -> None:
     # index = ds.plankton().to_dask().compute()
 
     ids = image_ids("plankton")
-    test_image_url = random.choice(ids)
-    # TODO clean this up
-    store = vector_store("plankton")
-    # do we even need these
-    _ = store.get([test_image_url], include=["embeddings"])["embeddings"]
+    # starting image
 
-    # TODO error handling
-    response = requests.get(test_image_url)
-    st.image(Image.open(BytesIO(response.content)))
+    test_image_url = random.choice(ids)
+
+    # TODO figure out how streamlit is supposed to work
+    closest_grid(test_image_url, rows)
 
 
 if __name__ == "__main__":
