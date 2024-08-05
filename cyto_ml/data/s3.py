@@ -3,6 +3,7 @@
 import s3fs
 from dotenv import load_dotenv
 import os
+import pandas as pd
 
 load_dotenv()
 
@@ -18,3 +19,12 @@ def s3_endpoint():
         client_kwargs={"endpoint_url": os.environ["ENDPOINT"]},
     )
     return fs
+
+
+def image_index(endpoint: s3fs.S3FileSystem, location: str):
+    """Find and likely later filter records in a bucket"""
+    index = endpoint.ls(location)
+    return pd.DataFrame(
+        [f"{os.environ['ENDPOINT']}/{x}" for x in index],
+        columns=["Filename"],
+    )
