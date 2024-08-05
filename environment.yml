@@ -18,6 +18,8 @@ dependencies:
   - jupyterlab
   - jupytext
   - pip
+  - streamlit
+  - plotly
   - pip:
     - scivision
     - git+https://github.com/alan-turing-institute/plankton-cefas-scivision@main
