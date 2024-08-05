@@ -8,14 +8,18 @@ based on their embeddings from a deep learning model
 
 """
 
+import os
 import chromadb
 import pandas as pd
 
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
+from scivision import load_dataset
+from dotenv import load_dotenv
+import intake
 
-
+load_dotenv()
 CDB = None
 
 
@@ -38,6 +42,13 @@ def get_embeddings(collection_name: str) -> list:
     collection = get_chroma_client().get_collection(collection_name)
     result = collection.get(include=["embeddings"])
     return result["embeddings"]
+
+
+@st.cache_data
+def intake_dataset(catalog_yml) -> intake.catalog.local.YAMLFileCatalog:
+
+    dataset = load_dataset(catalog_yml)
+    return dataset
 
 
 def create_figure(df: pd.DataFrame) -> go.Figure:
@@ -73,8 +84,13 @@ def main() -> None:
     st.title("Plankton image embeddings")
     col1, col2 = st.columns([3, 1])
 
-    # test_image =
-    # st.image(
+    catalog = "untagged-images-lana/intake.yml"
+
+    catalog_url = f"{os.environ.get('ENDPOINT')}/{catalog}"
+    ds = intake_dataset(catalog_url)
+
+    test_image = ds.test_image.to_dask().compute()
+    st.image(test_image)
 
 
 if __name__ == "__main__":
