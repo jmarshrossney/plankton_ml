@@ -83,7 +83,7 @@ def closest_grid(start_url: str, rows: list, size: Optional[int] = 26):
     closest = closest_n(start_url, size)
     # TODO error handling
 
-    for index, r in enumerate(rows):
+    for index, _ in enumerate(rows):
         for c in rows[index]:
             c.image(cached_image(closest.pop()), width=60)
 
@@ -122,7 +122,7 @@ def main() -> None:
     # it starts much slower on adding this
     # the generated HTML is not lovely at all
     rows = []
-    for i in range(0, 5):
+    for _ in range(0, 5):
         rows.append(st.columns(5))
 
     # catalog = "untagged-images-lana/intake.yml"
