@@ -19,7 +19,6 @@ import numpy as np
 from PIL import Image
 import plotly.express as px
 import plotly.graph_objects as go
-from sklearn.cluster import KMeans
 import streamlit as st
 from scivision import load_dataset
 from dotenv import load_dotenv
@@ -73,21 +72,6 @@ def cached_image(url: str) -> Image:
     """
     response = requests.get(url)
     return Image.open(BytesIO(response.content))
-
-
-@st.cache_resource
-def kmeans_cluster(n_clusters: Optional[int] = 10):
-    """
-    K-means cluster the embeddings, option for default size
-    TODO a silhouette analysis
-    https://scikit-learn.org/stable/auto_examples/cluster/plot_kmeans_silhouette_analysis.html#sphx-glr-auto-examples-cluster-plot-kmeans-silhouette-analysis-py
-
-    """
-    X = image_embeddings()
-    # Initialize and fit KMeans
-    kmeans = KMeans(n_clusters=n_clusters, random_state=42)
-    kmeans.fit(X)
-    return kmeans
 
 
 def closest_grid(start_url: str, rows: list, size: Optional[int] = 26):
