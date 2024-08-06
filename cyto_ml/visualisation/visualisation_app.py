@@ -9,19 +9,22 @@ based on their embeddings from a deep learning model
 """
 
 import random
-from cyto_ml.data.vectorstore import vector_store
-import pandas as pd
 import requests
 from io import BytesIO
+from typing import Optional
+
+import pandas as pd
+import numpy as np
 
 from PIL import Image
 import plotly.express as px
 import plotly.graph_objects as go
+from sklearn.cluster import KMeans
 import streamlit as st
 from scivision import load_dataset
 from dotenv import load_dotenv
-from typing import Optional
 import intake
+from cyto_ml.data.vectorstore import vector_store
 
 load_dotenv()
 
@@ -36,6 +39,12 @@ def image_ids(collection_name: str) -> list:
     """
     result = STORE.get()
     return result["ids"]
+
+
+@st.cache_data
+def image_embeddings(collection_name: str) -> list:
+    result = STORE.get(include=["embeddings"])
+    return np.array(result["embeddings"])
 
 
 @st.cache_data
@@ -64,6 +73,21 @@ def cached_image(url: str) -> Image:
     """
     response = requests.get(url)
     return Image.open(BytesIO(response.content))
+
+
+@st.cache_resource
+def kmeans_cluster(n_clusters: Optional[int] = 10):
+    """
+    K-means cluster the embeddings, option for default size
+    TODO a silhouette analysis
+    https://scikit-learn.org/stable/auto_examples/cluster/plot_kmeans_silhouette_analysis.html#sphx-glr-auto-examples-cluster-plot-kmeans-silhouette-analysis-py
+
+    """
+    X = image_embeddings()
+    # Initialize and fit KMeans
+    kmeans = KMeans(n_clusters=n_clusters, random_state=42)
+    kmeans.fit(X)
+    return kmeans
 
 
 def closest_grid(start_url: str, rows: list, size: Optional[int] = 26):
