@@ -40,27 +40,44 @@ def image_ids(collection_name: str) -> list:
 
 @st.cache_data
 def intake_dataset(catalog_yml: str) -> intake.catalog.local.YAMLFileCatalog:
-
+    """
+    Option to load an intake catalog from a URL, feels superflous right now
+    """
     dataset = load_dataset(catalog_yml)
     return dataset
 
 
 def closest_n(url: str, n: Optional[int] = 26) -> list:
+    """
+    Given an image URL return the N closest ones by cosine distance
+    """
     embed = STORE.get([url], include=["embeddings"])["embeddings"]
     results = STORE.query(query_embeddings=embed, n_results=n)
     return results["ids"][0]  # by index because API assumes query always multiple
 
 
-def closest_grid(start_url: str, rows: list):
-    closest = closest_n(start_url)
+@st.cache_data
+def cached_image(url: str) -> Image:
+    """
+    Read an image URL from s3 and return a PIL Image
+    Hopefully caches this per-image, so it'll speed up
+    """
+    response = requests.get(url)
+    return Image.open(BytesIO(response.content))
+
+
+def closest_grid(start_url: str, rows: list, size: Optional[int] = 26):
+    """
+    Given an image URL, render a grid of the N nearest images
+    by cosine distance between embeddings
+    N defaults to 26
+    """
+    closest = closest_n(start_url, size)
     # TODO error handling
 
     for index, r in enumerate(rows):
         for c in rows[index]:
-            # TODO cache for this
-            response = requests.get(closest.pop())
-
-            c.image(Image.open(BytesIO(response.content)))
+            c.image(cached_image(closest.pop()), width=60)
 
 
 def create_figure(df: pd.DataFrame) -> go.Figure:
