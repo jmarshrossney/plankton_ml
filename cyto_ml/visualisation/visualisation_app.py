@@ -20,6 +20,7 @@ from PIL import Image
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
+
 from scivision import load_dataset
 from dotenv import load_dotenv
 import intake
@@ -69,20 +70,26 @@ def cached_image(url: str) -> Image:
     """
     Read an image URL from s3 and return a PIL Image
     Hopefully caches this per-image, so it'll speed up
+    We tried streamlit_clickable_images but no tiff support
     """
     response = requests.get(url)
     return Image.open(BytesIO(response.content))
 
 
-def closest_grid(start_url: str, rows: list, size: Optional[int] = 26):
+def closest_grid(start_url: str, size: Optional[int] = 65):
     """
     Given an image URL, render a grid of the N nearest images
     by cosine distance between embeddings
     N defaults to 26
     """
     closest = closest_n(start_url, size)
-    # TODO error handling
 
+    # TODO understand where layout should happen
+    rows = []
+    for _ in range(0, 8):
+        rows.append(st.columns(8))
+
+    # TODO error handling
     for index, _ in enumerate(rows):
         for c in rows[index]:
             c.image(cached_image(closest.pop()), width=60)
@@ -113,17 +120,29 @@ def create_figure(df: pd.DataFrame) -> go.Figure:
     return fig
 
 
+def random_image() -> str:
+    ids = image_ids("plankton")
+    # starting image
+    test_image_url = random.choice(ids)
+    return test_image_url
+
+
+def show_random_image():
+    if st.session_state["random_img"]:
+        st.image(cached_image(st.session_state["random_img"]))
+
+
 def main() -> None:
     """
     Main method that sets up the streamlit app and builds the visualisation.
     """
+    if "random_img" not in st.session_state:
+        st.session_state["random_img"] = None
+
     st.set_page_config(layout="wide", page_title="Plankton image embeddings")
     st.title("Plankton image embeddings")
     # it starts much slower on adding this
     # the generated HTML is not lovely at all
-    rows = []
-    for _ in range(0, 5):
-        rows.append(st.columns(5))
 
     # catalog = "untagged-images-lana/intake.yml"
     # catalog_url = f"{os.environ.get('ENDPOINT')}/{catalog}"
@@ -132,13 +151,15 @@ def main() -> None:
     # Do we gain even slightly from this when we have the same index in the embeddings
     # index = ds.plankton().to_dask().compute()
 
-    ids = image_ids("plankton")
-    # starting image
+    st.session_state["random_img"] = random_image()
+    show_random_image()
 
-    test_image_url = random.choice(ids)
+    st.text("<-- random plankton")
+
+    st.button("try again", on_click=random_image)
 
     # TODO figure out how streamlit is supposed to work
-    closest_grid(test_image_url, rows)
+    closest_grid(st.session_state["random_img"])
 
 
 if __name__ == "__main__":
