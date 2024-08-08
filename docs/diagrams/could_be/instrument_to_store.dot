@@ -1,0 +1,33 @@
+# http://www.graphviz.org/content/cluster
+
+digraph G {
+  rankdir=LR;
+  graph [fontname = "Handlee"];
+  node [fontname = "Handlee"];
+  edge [fontname = "Handlee"];
+
+  bgcolor=transparent;
+
+  scope [shape=rect label="Microscope \n(FlowCam)"];
+  pc [shape=rect label="Local PC"]
+  
+  scope2 [shape=rect label="Laser imaging \n(Flow Cytometer)"];
+  pc2 [shape=rect label="Local PC"]
+  
+  san [shape=cylinder label="SAN \nprivate cloud"]
+  engine [shape=rect label="Workflow engine"]
+  tasks [label="Task graph"]
+  store [shape=cylinder label="S3 \nobject store"]
+
+  engine->tasks
+  tasks->san;
+  tasks->store [];
+  scope->pc
+  scope2->pc2
+  
+  pc2->san [label="pull on a schedule?", dir=back,fontsize=10];
+  
+  pc->san  [label="push on a schedule?", fontsize=10];
+  
+}
+
