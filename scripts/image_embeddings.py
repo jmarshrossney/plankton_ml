@@ -23,7 +23,9 @@ if __name__ == "__main__":
     # Walkthrough here that shows the dataset wrapper being exercised
     # https://github.com/AnnaLinton/scivision_examples/blob/main/how-to-use-scivision.ipynb
 
-    dataset = load_dataset(f"{os.environ.get('ENDPOINT', '')}/metadata/intake.yml")
+    # Limited to the Lancaster FlowCam dataset for now:
+    catalog = "untagged-images-lana/intake.yml"
+    dataset = load_dataset(f"{os.environ.get('ENDPOINT')}/{catalog}")
     collection = vector_store("plankton")
 
     model = truncate_model(load_model(SCIVISION_URL))
