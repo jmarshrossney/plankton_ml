@@ -54,6 +54,8 @@ if __name__ == "__main__":
     else:
         os.mkdir(f"{args.filePath}/decollage")
 
+    # TODO extract the coords, date, possibly depth from image filename
+
     # decollage
     i = 0
     for id in meta["id"]:
@@ -71,7 +73,12 @@ if __name__ == "__main__":
             meta["image_x"][i]: (meta["image_x"][i] + meta["image_w"][i]),
         ]
 
+        # TODO write EXIF metadata into the headers, with tiffile if necessary
         # save vignette to decollage folder
         imsave(f"{args.filePath}/decollage/{args.experimentName}_{id}.tif", img_sub)
 
+        # TODO clean, etc
         i += 1
+
+    # TODO decide whether to do anything with the analytic metadata (circularity etc)
+    # We could pop it into a sqlite store at this stage, but want the file linkages
