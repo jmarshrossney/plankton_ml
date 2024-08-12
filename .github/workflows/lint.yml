@@ -1,7 +1,13 @@
 name: flake8 Lint
 
-on: [push, pull_request]
-
+on:
+  push:
+    paths:
+      - "cyto_ml"
+  pull_request:
+    paths:
+      - "cyto_ml"
+      
 jobs:
   flake8-lint:
     runs-on: ubuntu-latest
