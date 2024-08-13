@@ -5,6 +5,7 @@
 # Originally adapted from https://sarigiering.co/posts/extract-individual-particle-images-from-flowcam/
 import argparse
 import os
+import re
 import pandas as pd
 import numpy as np
 from skimage.io import imread, imsave
@@ -26,6 +27,25 @@ def window_slice(
     image: np.ndarray, x: int, y: int, height: int, width: int
 ) -> np.ndarray:
     return image[y : y + height, x : x + width]  # noqa: E203
+
+
+def headers_from_filename(filename: str) -> dict:
+    """Attempt to extract lon/lat and date, option of depth, from filename
+    Return a dict with key-value pairs for use as EXIF headers
+    """
+    headers = {}
+    pattern = r"_(-?\d+\.\d+)_(-?\d+\.\d+)_(\d{8})(?:_(\d+))?"
+
+    match = re.search(pattern, filename)
+    if match:
+        lat, lon, date, depth = match.groups()
+        # TODO look into accepted standard tags here
+        headers["lat"] = lat
+        headers["lon"] = lon
+        headers["date"] = date
+        # TODO most depth matches will be spurious, what are the rules?
+        headers["depth"] = depth
+    return headers
 
 
 if __name__ == "__main__":
@@ -53,8 +73,9 @@ if __name__ == "__main__":
     if not lst_file:
         raise FileNotFoundError("no lst file in this directory")
 
-    meta = lst_metadata(f"{args.filePath}/{lst_file}")
+    metadata = lst_metadata(f"{args.filePath}/{lst_file}")
 
+    # TODO consider squirting this straight into the object store API
     # create a folder to save the output into
     if os.path.exists(f"{args.filePath}/decollage"):
         pass
@@ -63,35 +84,26 @@ if __name__ == "__main__":
 
     # TODO extract the coords, date, possibly depth from image filename
 
-    # decollage
-    # TODO rather than traverse the index and keep rereading large images,
+    # decollage - rather than traverse the index and keep rereading large images,
     # filter by filename first and traverse that way, should speed up a lot
-    i = 0
-    for id in meta["id"]:
-        # find collage name and path
+    for collage_file in metadata.groupby.unique():
 
-        collage_filename = meta["collage_file"][i]
-        cp = f"{args.filePath}/{collage_filename}"
+        collage = imread(f"{args.filePath}/{collage_file}")
 
-        # load collage image
-        collage = imread(cp)
+        df = metadata[metadata.collage_file == collage_file]
 
-        # extract vignette
-        #
-        img_sub = window_slice(
-            cp,
-            meta["image_x"][i],
-            meta["image_y"][i],
-            meta["image_h"][i],
-            meta["image_w"][i],
-        )
-
-        # TODO write EXIF metadata into the headers, - piexif
-        # save vignette to decollage folder
-        imsave(f"{args.filePath}/decollage/{args.experimentName}_{id}.tif", img_sub)
-
-        # TODO clean, etc
-        i += 1
+        for i in df.index:
+            # extract vignette
+            img_sub = window_slice(
+                collage,
+                df["image_x"][i],
+                df["image_y"][i],
+                df["image_h"][i],
+                df["image_w"][i],
+            )
+            # TODO write EXIF metadata into the headers, - piexif
+            # save vignette to decollage folder
+            imsave(f"{args.filePath}/decollage/{args.experimentName}_{id}.tif", img_sub)
 
     # TODO decide whether to do anything with the analytic metadata (circularity etc)
     # We could pop it into a sqlite store at this stage, but want the file linkages
