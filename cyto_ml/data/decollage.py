@@ -6,6 +6,7 @@
 import argparse
 import os
 import pandas as pd
+import numpy as np
 from skimage.io import imread, imsave
 
 
@@ -19,6 +20,12 @@ def lst_metadata(filename: str) -> pd.DataFrame:
     meta = pd.read_csv(filename, sep="|", skiprows=55, header=None)
     meta.columns = colNames
     return meta
+
+
+def window_slice(
+    image: np.ndarray, x: int, y: int, height: int, width: int
+) -> np.ndarray:
+    return image[y : y + height, x : x + width]  # noqa: E203
 
 
 if __name__ == "__main__":
@@ -57,6 +64,8 @@ if __name__ == "__main__":
     # TODO extract the coords, date, possibly depth from image filename
 
     # decollage
+    # TODO rather than traverse the index and keep rereading large images,
+    # filter by filename first and traverse that way, should speed up a lot
     i = 0
     for id in meta["id"]:
         # find collage name and path
@@ -68,10 +77,14 @@ if __name__ == "__main__":
         collage = imread(cp)
 
         # extract vignette
-        img_sub = collage[
-            meta["image_y"][i]: (meta["image_y"][i] + meta["image_h"][i]),
-            meta["image_x"][i]: (meta["image_x"][i] + meta["image_w"][i]),
-        ]
+        #
+        img_sub = window_slice(
+            cp,
+            meta["image_x"][i],
+            meta["image_y"][i],
+            meta["image_h"][i],
+            meta["image_w"][i],
+        )
 
         # TODO write EXIF metadata into the headers, - piexif
         # save vignette to decollage folder
