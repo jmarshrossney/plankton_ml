@@ -73,7 +73,7 @@ if __name__ == "__main__":
             meta["image_x"][i]: (meta["image_x"][i] + meta["image_w"][i]),
         ]
 
-        # TODO write EXIF metadata into the headers, with tiffile if necessary
+        # TODO write EXIF metadata into the headers, - piexif
         # save vignette to decollage folder
         imsave(f"{args.filePath}/decollage/{args.experimentName}_{id}.tif", img_sub)
 

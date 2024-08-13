@@ -5,7 +5,7 @@ channels:
   - defaults
 dependencies:
   - python=3.9
-  - pytorch=1.10.0
+  - pytorch=1.10.0  # pinned here for the scivision model
   - mkl=2024.0
   - chromadb=0.5.3
   - intake-xarray
@@ -16,6 +16,7 @@ dependencies:
   - s3fs
   - jupyterlab
   - jupytext
+  - piexif
   - pip
   - pip:
     - scivision
