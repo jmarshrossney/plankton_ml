@@ -109,20 +109,17 @@ if __name__ == "__main__":
 
     metadata = lst_metadata(f"{args.filePath}/{lst_file}")
 
-    # TODO consider squirting this straight into the object store API
     # create a folder to save the output into
     if os.path.exists(f"{args.filePath}/decollage"):
         pass
     else:
         os.mkdir(f"{args.filePath}/decollage")
 
-    # TODO extract the coords, date, possibly depth from image filename
-
     # decollage - rather than traverse the index and keep rereading large images,
     # filter by filename first and traverse that way, should speed up a lot
-    for collage_file in metadata.groupby.unique():
+    for collage_file in metadata.collage_file.unique():
 
-        # Read lat, lon etc
+        # extract the coords, date, possibly depth from image filename
         collage_headers = headers_from_filename(collage_file)
 
         collage = imread(f"{args.filePath}/{collage_file}")
@@ -140,17 +137,18 @@ if __name__ == "__main__":
                 height,
                 width,
             )
-            # TODO write EXIF metadata into the headers, -
-            # exiftool? because piexif docs say no write support for TIFFs
-            # https://www.exiftool.org/faq.html#Q14
+            # write EXIF metadata into the headers
             headers = collage_headers
             headers["ImageWidth"] = width
             headers["ImageHeight"] = height
 
             # save vignette to decollage folder
             # we probably need to write to the filesystem to then use exiftool
-            output_file = f"{args.filePath}/decollage/{args.experimentName}_{id}.tif"
+            output_file = f"{args.filePath}/decollage/{args.experimentName}_{i}.tif"
             imsave(output_file, img_sub)
+            write_headers(output_file, headers)
+
+            # TODO consider squirting this straight into the object store API
 
     # TODO decide whether to do anything with the analytic metadata (circularity etc)
     # We could pop it into a sqlite store at this stage, but want the file linkages
