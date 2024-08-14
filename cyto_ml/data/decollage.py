@@ -39,12 +39,16 @@ def headers_from_filename(filename: str) -> dict:
     match = re.search(pattern, filename)
     if match:
         lat, lon, date, depth = match.groups()
-        # TODO look into accepted standard tags here
-        headers["lat"] = lat
-        headers["lon"] = lon
-        headers["date"] = date
-        # TODO most depth matches will be spurious, what are the rules?
-        headers["depth"] = depth
+        # https://exiftool.org/TagNames/GPS.html
+        headers["GPSLatitude"] = lat
+        headers["GPSLongitude"] = lon
+        headers["DateTimeOriginal"] = (
+            date  # better to leave as date than pad with zero hours?
+        )
+        # TODO most depth matches will be spurious, what are the rules (refer to Kelly?
+        headers["GPSAltitude"] = (
+            depth  # can we use negative altitude as bathymetric depth?
+        )
     return headers
 
 
@@ -88,20 +92,29 @@ if __name__ == "__main__":
     # filter by filename first and traverse that way, should speed up a lot
     for collage_file in metadata.groupby.unique():
 
+        # Read lat, lon etc
+        collage_headers = headers_from_filename(collage_file)
+
         collage = imread(f"{args.filePath}/{collage_file}")
 
         df = metadata[metadata.collage_file == collage_file]
 
         for i in df.index:
             # extract vignette
+            height = df["image_h"][i]
+            width = df["image_w"][i]
             img_sub = window_slice(
                 collage,
                 df["image_x"][i],
                 df["image_y"][i],
-                df["image_h"][i],
-                df["image_w"][i],
+                height,
+                width,
             )
-            # TODO write EXIF metadata into the headers, - piexif
+            # TODO write EXIF metadata into the headers, - piexif or exiftool?
+            # https://www.exiftool.org/faq.html#Q14
+            headers = collage_headers
+            headers["ImageWidth"] = width
+            headers["ImageHeight"] = height
             # save vignette to decollage folder
             imsave(f"{args.filePath}/decollage/{args.experimentName}_{id}.tif", img_sub)
 

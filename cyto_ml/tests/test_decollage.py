@@ -16,4 +16,4 @@ def test_window_slice(collage_file):
 
 def test_headers_from_filename(collage_file):
     h = headers_from_filename(collage_file)
-    assert "lat" in h and h["lat"]
+    assert "GPSLatitude" in h and h["GPSLatitude"]
