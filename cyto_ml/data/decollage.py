@@ -7,6 +7,7 @@ import argparse
 import logging
 import os
 import re
+import glob
 
 import pandas as pd
 import numpy as np
@@ -82,6 +83,85 @@ def read_headers(filename: str) -> dict:
     return meta
 
 
+class FlowCamSession:
+    """
+    Bundle up all the logic of the decollage script so it can be run
+    without passing commandline arguments
+    """
+
+    def __init__(self, directory: str, output_directory: str, experiment_name: str):
+        """Implements the work of the decollage script:
+
+        directory - path to a directory containing all the images for a FlowCam session
+        output_directory - path to a directory to write the single images, create if needed
+        experiment_name - a tag to use on the image files, could be superfluous
+        """
+        self.directory = directory
+        self.output_directory = output_directory
+        self.experiment_name = experiment_name
+
+        self.read_metadata()
+        self.output_dir()
+
+        self.do_decollage()
+
+    def read_metadata(self) -> None:
+        self.metadata = {}
+
+        files = glob.glob(f"{self.directory}/*.lst")
+        print(files)
+
+        if len(files) == 0:
+            raise FileNotFoundError("no lst file in this directory")
+        else:
+            self.metadata = lst_metadata(files[0])
+
+    def output_dir(self):
+        # create a folder to save the output into
+        if os.path.exists(self.output_directory):
+            pass
+        else:
+            os.mkdir(self.output_directory)
+
+    def do_decollage(self):
+        """Not very lovely single function that replaces the work of the script."""
+        # Reasonably assume that all images in a session have same spatio-temporal metadata
+        # extract the coords, date, possibly depth from directory name
+        collage_headers = headers_from_filename(self.directory)
+
+        # decollage - rather than traverse the index and keep rereading large images,
+        # filter by filename first and traverse that way, should speed up a lot
+        for collage_file in self.metadata.collage_file.unique():
+
+            collage = imread(f"{self.directory}/{collage_file}")
+
+            df = self.metadata[self.metadata.collage_file == collage_file]
+
+            for i in df.index:
+                # extract vignette
+                height = df["image_h"][i]
+                width = df["image_w"][i]
+                img_sub = window_slice(
+                    collage,
+                    df["image_x"][i],
+                    df["image_y"][i],
+                    height,
+                    width,
+                )
+                # write EXIF metadata into the headers
+                headers = collage_headers
+                headers["ImageWidth"] = width
+                headers["ImageHeight"] = height
+
+                # save vignette to decollage folder
+                # we probably need to write to the filesystem to then use exiftool
+                output_file = (
+                    f"{self.directory}/decollage/{self.experiment_name}_{i}.tif"
+                )
+                imsave(output_file, img_sub)
+                write_headers(output_file, headers)
+
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
@@ -95,60 +175,10 @@ if __name__ == "__main__":
     parser.add_argument("experimentName", help="name to append to each decollaged file")
     args = parser.parse_args()
 
-    files = os.listdir(args.filePath)
+    # Run the decollage process for a whole session
+    FlowCamSession(args.filePath, f"{args.filePath}/decollage", args.experimentName)
 
-    # TODO handle cleaner
-    lst_file = False
-    for f in files:
-        if f.endswith(".lst"):
-            lst_file = f
-            break
-
-    if not lst_file:
-        raise FileNotFoundError("no lst file in this directory")
-
-    metadata = lst_metadata(f"{args.filePath}/{lst_file}")
-
-    # create a folder to save the output into
-    if os.path.exists(f"{args.filePath}/decollage"):
-        pass
-    else:
-        os.mkdir(f"{args.filePath}/decollage")
-
-    # decollage - rather than traverse the index and keep rereading large images,
-    # filter by filename first and traverse that way, should speed up a lot
-    for collage_file in metadata.collage_file.unique():
-
-        # extract the coords, date, possibly depth from image filename
-        collage_headers = headers_from_filename(collage_file)
-
-        collage = imread(f"{args.filePath}/{collage_file}")
-
-        df = metadata[metadata.collage_file == collage_file]
-
-        for i in df.index:
-            # extract vignette
-            height = df["image_h"][i]
-            width = df["image_w"][i]
-            img_sub = window_slice(
-                collage,
-                df["image_x"][i],
-                df["image_y"][i],
-                height,
-                width,
-            )
-            # write EXIF metadata into the headers
-            headers = collage_headers
-            headers["ImageWidth"] = width
-            headers["ImageHeight"] = height
-
-            # save vignette to decollage folder
-            # we probably need to write to the filesystem to then use exiftool
-            output_file = f"{args.filePath}/decollage/{args.experimentName}_{i}.tif"
-            imsave(output_file, img_sub)
-            write_headers(output_file, headers)
-
-            # TODO consider squirting this straight into the object store API
+    # TODO consider squirting the output straight into the object store API
 
     # TODO decide whether to do anything with the analytic metadata (circularity etc)
     # We could pop it into a sqlite store at this stage, but want the file linkages
