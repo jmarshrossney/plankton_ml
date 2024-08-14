@@ -4,11 +4,17 @@
 # where file path points to the flowcam data folder which has the collage .tifs and the .lst file inside
 # Originally adapted from https://sarigiering.co/posts/extract-individual-particle-images-from-flowcam/
 import argparse
+import logging
 import os
 import re
+
 import pandas as pd
 import numpy as np
 from skimage.io import imread, imsave
+from exiftool import ExifToolHelper
+from exiftool.exceptions import ExifToolExecuteError
+
+logging.basicConfig(level=logging.INFO)
 
 
 def lst_metadata(filename: str) -> pd.DataFrame:
@@ -50,6 +56,30 @@ def headers_from_filename(filename: str) -> dict:
             depth  # can we use negative altitude as bathymetric depth?
         )
     return headers
+
+
+def write_headers(filename: str, headers: dict) -> bool:
+    """
+    Given a dictionary of EXIF tag keys and their values, write to filename
+    Returns True if nothing has obviously gone wrong during this process
+    """
+    result = None
+    try:
+        with ExifToolHelper() as et:
+            et.set_tags([filename], tags=headers, params=["-P", "-overwrite_original"])
+        result = True
+    # TODO try failures, observe them
+    except ExifToolExecuteError as err:
+        logging.warning(err)
+        result = False
+    return result
+
+
+def read_headers(filename: str) -> dict:
+    meta = {}
+    with ExifToolHelper() as et:
+        meta = et.get_metadata(filename)
+    return meta
 
 
 if __name__ == "__main__":
@@ -116,8 +146,11 @@ if __name__ == "__main__":
             headers = collage_headers
             headers["ImageWidth"] = width
             headers["ImageHeight"] = height
+
             # save vignette to decollage folder
-            imsave(f"{args.filePath}/decollage/{args.experimentName}_{id}.tif", img_sub)
+            # we probably need to write to the filesystem to then use exiftool
+            output_file = f"{args.filePath}/decollage/{args.experimentName}_{id}.tif"
+            imsave(output_file, img_sub)
 
     # TODO decide whether to do anything with the analytic metadata (circularity etc)
     # We could pop it into a sqlite store at this stage, but want the file linkages

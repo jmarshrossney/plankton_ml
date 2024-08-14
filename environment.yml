@@ -16,8 +16,8 @@ dependencies:
   - s3fs
   - jupyterlab
   - jupytext
-  - exiftool
   - pip
   - pip:
+    - pyexiftool
     - scivision
     - git+https://github.com/alan-turing-institute/plankton-cefas-scivision@main

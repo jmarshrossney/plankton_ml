@@ -1,4 +1,5 @@
 import os
+import shutil
 import pytest
 from cyto_ml.models.scivision import (
     load_model,
@@ -64,3 +65,12 @@ def collage_file(fixture_dir):
         fixture_dir,
         "test_collage/MicrobialMethane_MESO_Tank10_54.0143_-2.7770_04052023_1_images_000001.tif",
     )  # noqa: E501
+
+
+@pytest.fixture
+def exiftest_file(fixture_dir):
+    """This runs in-place so make a copy of the file every time"""
+    orig = os.path.join(fixture_dir, "test_collage/exiftest.tif")
+    temp = orig.replace("exiftest", "temp")
+    shutil.copyfile(orig, temp)
+    return temp
