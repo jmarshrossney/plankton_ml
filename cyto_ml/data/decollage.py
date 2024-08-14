@@ -110,7 +110,8 @@ if __name__ == "__main__":
                 height,
                 width,
             )
-            # TODO write EXIF metadata into the headers, - piexif or exiftool?
+            # TODO write EXIF metadata into the headers, -
+            # exiftool? because piexif docs say no write support for TIFFs
             # https://www.exiftool.org/faq.html#Q14
             headers = collage_headers
             headers["ImageWidth"] = width

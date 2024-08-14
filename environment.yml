@@ -16,7 +16,7 @@ dependencies:
   - s3fs
   - jupyterlab
   - jupytext
-  - piexif
+  - exiftool
   - pip
   - pip:
     - scivision
