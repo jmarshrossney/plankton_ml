@@ -34,19 +34,17 @@ def prepare_image(image: DataArray):
     Take an xarray of image data and prepare it to pass through the model
     a) Converts the image data to a PyTorch tensor
     b) Accepts a single image or batch (no need for torch.stack)
-    c) Uses a CUDA device if available
     """
+    # Computes the DataArray and returns a numpy array
+    image_numpy = image.to_numpy()
+
     # Convert the image data to a PyTorch tensor
-    tensor_image = torchvision.transforms.ToTensor()(image.to_numpy())
+    tensor_image = torchvision.transforms.ToTensor()(image_numpy)
 
     # Check if the input is a single image or a batch
     if len(tensor_image.shape) == 3:
         # Single image, add a batch dimension
         tensor_image = tensor_image.unsqueeze(0)
-
-    # Check if CUDA is available and move the tensor to the CUDA device
-    if torch.cuda.is_available():
-        tensor_image = tensor_image.cuda()
 
     return tensor_image
 
