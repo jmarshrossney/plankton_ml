@@ -11,3 +11,12 @@ readme = "README.md"
 
 [tool.jupytext]
 formats = "ipynb,md"
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+[tool.black]
+target-version = ["py39"]
+line-length = 88
