@@ -1,12 +1,13 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "cyto_ml"
-version = "0.1"
+version = "0.1.0"
+requires-python = "==3.9.*"
 description = "This package supports the processing and analysis of plankton sample data"
 readme = "README.md"
-requires-python = "==3.9.*"
-
-[tool.setuptools]
-py-modules = []
 
 [tool.jupytext]
 formats = "ipynb,md"
