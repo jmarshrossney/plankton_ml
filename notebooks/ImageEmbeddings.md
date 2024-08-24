@@ -12,10 +12,10 @@ jupyter:
     name: python3
 ---
 
-Use this with the `cyto_39` environment (the scivision model needs a specific version of `pytorch` that isn't packaged for >3.9, i have raised a Github issue asking if they plan to update it)
+Use this with the `cyto_ml` environment.
 
 `conda env create -f environment.yml`
-`conda activate cyto_39`
+`conda activate cyto_ml`
 
 ```python
 import os
@@ -40,50 +40,25 @@ model = load_model()
 dataset.test_image().to_dask()
 ```
 
-The scivision wrapper depends on this being an xarray Dataset with settable attributes, rather than a DataArray
-
-Setting exif_tags: True (Dataset) or False (DataArray) is what controls this
-https://docs.xarray.dev/en/stable/generated/xarray.DataArray.to_dataset.html 
-
-https://github.com/alan-turing-institute/scivision/blob/07fb74e5231bc1d56cf39df38c19ef40e3265e4c/src/scivision/io/reader.py#L183
-https://github.com/intake/intake/blob/29c8878aa7bf6e93185e2c9639f8739445dff22b/intake/__init__.py#L101
-
-But now we're dependent on image height and width metadata being set in the EXIF tags to use the `predict` interface, this is set in the model description through `scivision`, this is brittle
-
-https://github.com/alan-turing-institute/plankton-cefas-scivision/blob/main/resnet50_cefas/model.py#L71
-
-
-
-A quick look at the example dataset that comes with the model, for reference
-
-
-In this case we don't want to use the `predict` interface anyway (one of N class labels) - we want the features that go into the last fully-connected layer (as described here https://stackoverflow.com/a/52548419)
-
 ```python
-network = torch.nn.Sequential(*(list(model._plumbing.model.pretrained_model.children())[:-1]))
+network = load_model(strip_final_layer=True)
 ```
 
 ```python
 imgs = dataset.test_image().to_dask()
-i= imgs.to_numpy()
-i.shape
-
+imgs.to_numpy().shape
 ```
-
-https://github.com/alan-turing-institute/plankton-cefas-scivision/blob/main/resnet50_cefas/data.py 
-
-
 
 Pass the image through our truncated network and get some embeddings out
 
 ```python
-o = torch.stack([torchvision.transforms.ToTensor()(i)])
+o = prepare_image(imgs)
 feats = network(o)
 feats.shape
 ```
 
 ```python
-embeddings = list(feats[0].squeeze(1).squeeze(1).detach().numpy().astype(float))
+embeddings = feats[0].tolist()
 ```
 
 ```python
@@ -132,7 +107,7 @@ index
 
 ```python
 def flat_embeddings(features: torch.Tensor):
-    return list(features[0].squeeze(1).squeeze(1).detach().numpy().astype(float))
+    return features[0].tolist()
 ```
 
 ```python
@@ -160,6 +135,8 @@ This scales ok at 8000 or so images
 ```python
 collection.count()
 ```
+
+This is _really_ slow - joe
 
 ```python
 res = index.apply(file_embeddings, axis=1)
