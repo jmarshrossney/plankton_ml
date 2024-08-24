@@ -19,10 +19,11 @@ def prepare_image(image: DataArray):
     )
     assert torch.all((tensor_image >= 0.0) & (tensor_image <= 1.0))
 
-    # Check if the input is a single image or a batch
-    if len(tensor_image.shape) == 3:
+    if tensor_image.dim() == 3:
         # Single image, add a batch dimension
         tensor_image = tensor_image.unsqueeze(0)
+
+    assert tensor_image.dim() == 4
 
     return tensor_image
 
