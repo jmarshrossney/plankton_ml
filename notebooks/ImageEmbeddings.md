@@ -5,7 +5,7 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.3'
-      jupytext_version: 1.16.3
+      jupytext_version: 1.16.4
   kernelspec:
     display_name: Python 3 (ipykernel)
     language: python
@@ -19,7 +19,6 @@ Use this with the `cyto_39` environment (the scivision model needs a specific ve
 
 ```python
 import os
-from scivision import load_pretrained_model, load_dataset
 from dotenv import load_dotenv
 import torch
 import torchvision
@@ -29,11 +28,15 @@ sys.path.append('../')
 from cyto_ml.models.scivision import prepare_image
 from intake_xarray import ImageSource
 load_dotenv()  # sets our object store endpoint and credentials from the .env file
+
+from intake import open_catalog
+
+from resnet50_cefas import load_model
 ```
 
 ```python
-dataset = load_dataset(f"{os.environ.get('ENDPOINT', '')}/metadata/intake.yml")
-model = load_pretrained_model("https://github.com/alan-turing-institute/plankton-cefas-scivision")
+dataset = open_catalog(f"{os.environ.get('ENDPOINT', '')}/metadata/intake.yml")
+model = load_model()
 dataset.test_image().to_dask()
 ```
 
