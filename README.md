@@ -6,26 +6,46 @@ It's a companion project to an R-shiny based image annotation app that is not ye
 
 ## Installation
 
-### Python environment setup
+### Environment and package installation
+
+#### Using pip
+
+Create a fresh virtual environment in the repository root using Python >=3.12 and (e.g.) `venv`: 
+
+```
+python -m venv venv
+```
+
+Next, install the package using `pip`:
+
+```
+python -m pip install .
+```
+
+Most likely you are interested in developing and/or experimenting, so you will probably want to install the package in 'editable' mode (`-e`), along with dev tools and jupyter notebook functionality
+
+```
+python -m pip install -e .[all]
+```
+
+#### Using conda
 
 Use anaconda or miniconda to create a python environment using the included `environment.yml`
 
 ```
 conda env create -f environment.yml
+conda activate cyto_ml
 ```
 
-Please note that this is specifically pinned to python 3.9 due to dependency versions; we make experimental use of the [CEFAS plankton model available through SciVision](https://sci.vision/#/model/resnet50-plankton), which in turn uses an older version of pytorch that isn't packaged above python 3.9.
+Next install this package _without dependencies_:
+
+```
+python -m pip install --no-deps -e .
+```
 
 ### Object store connection
 
 `.env` contains environment variable names for S3 connection details for the [JASMIN object store](https://github.com/NERC-CEH/object_store_tutorial/). Fill these in with your own credentials. If you're not sure what the `ENDPOINT` should be, please reach out to one of the project contributors listed below. 
-
-
-### Package installation
-
-Get started by cloning this repository and running
-
-`python -m pip install -e .`
 
 ### Running tests
 

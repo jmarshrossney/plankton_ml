@@ -22,8 +22,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-jupyter = ["ipython", "jupyterlab", "jupytext"]
+jupyter = ["jupyterlab", "jupytext"]
 dev = ["pytest", "black", "flake8", "isort"]
+all = ["cyto_ml[jupyter,dev]"]
 
 [tool.jupytext]
 formats = "ipynb,md"
