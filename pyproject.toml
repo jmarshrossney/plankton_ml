@@ -10,9 +10,15 @@ description = "This package supports the processing and analysis of plankton sam
 readme = "README.md"
 dependencies = [
     "chromadb",
+    "intake==0.7.0",
+    "intake-xarray",
+    "pandas",
     "python-dotenv",
     "s3fs",
+    "scikit-image", # secretly required by intake-xarray as default reader
     "torch",
+    "xarray",
+    "resnet50-cefas@git+https://github.com/jmarshrossney/resnet50-cefas",
 ]
 
 [project.optional-dependencies]
