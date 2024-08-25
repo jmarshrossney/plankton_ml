@@ -4,9 +4,9 @@ This repository contains code and configuration for processing and analysing ima
 
 It's a companion project to an R-shiny based image annotation app that is not yet released, written by researchers and data scientists at the UK Centre for Ecology and Hydrology in the early stages of a collaboration that was placed on hold.
 
-## Installation
+## Setup
 
-### Environment and package installation
+### Environment setup and package installation
 
 #### Using pip
 
@@ -25,7 +25,7 @@ python -m pip install .
 Most likely you are interested in developing and/or experimenting, so you will probably want to install the package in 'editable' mode (`-e`), along with dev tools and jupyter notebook functionality
 
 ```
-python -m pip install -e .[all]
+python -m pip install -e .[dev,jupyter]
 ```
 
 #### Using conda
@@ -49,7 +49,10 @@ python -m pip install --no-deps -e .
 
 ### Running tests
 
-`pytest` or `py.test`
+Run `pytest` in the root of the repository
+
+
+#### Reproducible conda environments
 
 ## Contents
 
@@ -77,6 +80,43 @@ For more information see the [Jupytext docs](https://jupytext.readthedocs.io/en/
 
 ### TBC (object store upload, derived classifiers, etc)
 
+
+## Reproducible environments
+
+In some situations, e.g. running experiments intended for publication, you might want to be able to reproduce exactly your working environment.
+
+### Reproducible Python environments
+
+Rather than installing via `python -m pip install -e .[dev,jupyter]` as described above, you can install all dependencies using the `requirements.txt` provided, and then install `cyto_ml` with the `--no-deps` option
+
+```
+python -m venv venv
+python -m pip install -r requirements.txt
+python -m pip install --no-deps .
+```
+
+To update the lockfile you can run
+
+```
+pip-compile --upgrade
+```
+
+Note that non-python dependencies (such as cuda, blas etc.) are not locked using this approach. If this matters to you consider using `conda` environments as described next.
+
+
+### Reproducible Conda environments
+
+Rather than installing via `conda env create -f environment.yml` as described above, you can use the lockfile provided, which is called `conda-lock.yml`.
+
+For this you need [`conda-lock`](https://github.com/conda/conda-lock) to be already installed. Although this can be done easily by a `pip install` into your system Python or `conda install` into your `base` environment, it is preferable to us `pipx` or `condax` as described in the `conda-lock` installation instructions.
+
+Once you have `conda-lock`, you can simply run
+
+```
+conda-lock install
+conda activate cyto_ml
+python -m pip install --no-deps .
+```
 
 ## Contributors
 
