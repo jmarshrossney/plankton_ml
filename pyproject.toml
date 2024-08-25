@@ -18,13 +18,12 @@ dependencies = [
     "scikit-image", # secretly required by intake-xarray as default reader
     "torch",
     "xarray",
-    #"resnet50-cefas@git+https://github.com/jmarshrossney/resnet50-cefas",
+    "resnet50-cefas@git+https://github.com/jmarshrossney/resnet50-cefas",
 ]
 
 [project.optional-dependencies]
 jupyter = ["jupyterlab", "jupytext", "matplotlib"]
 dev = ["pytest", "black", "flake8", "isort", "pip-tools", "conda-lock"]
-#all = ["cyto_ml[jupyter,dev]"]
 
 [tool.jupytext]
 formats = "ipynb,md"
@@ -37,12 +36,3 @@ filterwarnings = [
 [tool.black]
 target-version = ["py312"]
 line-length = 88
-
-[tool.conda-lock]
-channels = [
-    "pytorch", "conda-forge"
-]
-platforms = [
-    "linux-64", 
-    "win-64"
-]

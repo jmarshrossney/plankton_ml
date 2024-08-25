@@ -3,10 +3,14 @@ channels:
   - pytorch
   - conda-forge
 channel_priority: flexible
+platforms:
+  - linux-64
+  - win-64
 dependencies:
   - python=3.12
   - pytorch
   - black
+  - conda-lock
   - chromadb
   - flake8
   - intake-xarray
@@ -16,6 +20,7 @@ dependencies:
   - jupytext
   - matplotlib
   - pandas
+  - pip-tools
   - pytest
   - python-dotenv
   - s3fs
@@ -23,4 +28,4 @@ dependencies:
   - xarray
   - pip
   - pip:
-    - git+https://github.com/jmarshrossney/resnet50-cefas
+    - git+https://github.com/jmarshrossney/resnet50-cefas@main
