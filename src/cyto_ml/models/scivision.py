@@ -2,6 +2,7 @@ import torch
 from torchvision.transforms.v2.functional import to_image, to_dtype
 from xarray import DataArray
 
+
 def prepare_image(image: DataArray):
     """
     Take an xarray of image data and prepare it to pass through the model
