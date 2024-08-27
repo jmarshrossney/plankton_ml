@@ -20,7 +20,10 @@ dependencies:
   - python-dotenv
   - s3fs
   - scikit-image
+  - scikit-learn
   - xarray
   - pip
+  - streamlit
+  - plotly
   - pip:
     - git+https://github.com/jmarshrossney/resnet50-cefas
