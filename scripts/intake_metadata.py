@@ -7,6 +7,7 @@ See also https://github.com/intake/intake-stac
 Via https://gallery.pangeo.io/repos/pangeo-data/pangeo-tutorial-gallery/intake.html#Build-an-intake-catalog
 
 """
+
 import os
 from cyto_ml.data.intake import intake_yaml
 from cyto_ml.data.s3 import s3_endpoint, image_index

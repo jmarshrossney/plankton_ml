@@ -25,11 +25,11 @@ Please note that this is specifically pinned to python 3.9 due to dependency ver
 
 Get started by cloning this repository and running
 
-`pip install -e .`
+`python -m pip install -e .`
 
 ### Running tests
 
-`python -m pytest` or `py.test`
+`pytest` or `py.test`
 
 ## Contents
 
