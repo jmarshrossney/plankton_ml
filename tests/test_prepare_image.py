@@ -9,8 +9,8 @@ from cyto_ml.models.scivision import prepare_image
 
 
 def test_single_image(single_image):
-
     image_data = ImageSource(single_image).to_dask()
+
     # Tensorise the image (potentially normalise if we have useful values)
     prepared_image = prepare_image(image_data)
 
@@ -25,7 +25,6 @@ def test_image_batch(image_batch):
     We either pad them (and process a lot of blank space) or stick to single image input
     """
     # Load a batch of plankton images
-
     image_data = ImageSource(image_batch).to_dask()
 
     with pytest.raises(ValueError) as err:

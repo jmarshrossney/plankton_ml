@@ -1,10 +1,7 @@
 import os
 import pytest
-from cyto_ml.models.scivision import (
-    load_model,
-    truncate_model,
-    SCIVISION_URL,
-)
+
+from resnet50_cefas import load_model
 
 
 @pytest.fixture
@@ -30,7 +27,7 @@ def image_batch(image_dir):
 
 @pytest.fixture
 def scivision_model():
-    return truncate_model(load_model(SCIVISION_URL))
+    return load_model(strip_final_layer=True)
 
 
 @pytest.fixture

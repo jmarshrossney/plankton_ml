@@ -4,10 +4,27 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cyto_ml"
-version = "0.1.0"
-requires-python = "==3.9.*"
+version = "0.2.0"
+requires-python = ">=3.12"
 description = "This package supports the processing and analysis of plankton sample data"
 readme = "README.md"
+dependencies = [
+    "chromadb",
+    "intake==0.7.0",
+    "intake-xarray",
+    "pandas",
+    "python-dotenv",
+    "s3fs",
+    "scikit-image", # secretly required by intake-xarray as default reader
+    "torch",
+    "xarray",
+    "resnet50-cefas@git+https://github.com/jmarshrossney/resnet50-cefas",
+]
+
+[project.optional-dependencies]
+jupyter = ["jupyterlab", "jupytext", "matplotlib"]
+dev = ["pytest", "black", "flake8", "isort"]
+all = ["cyto_ml[jupyter,dev]"]
 
 [tool.jupytext]
 formats = "ipynb,md"
@@ -18,5 +35,5 @@ filterwarnings = [
 ]
 
 [tool.black]
-target-version = ["py39"]
+target-version = ["py312"]
 line-length = 88
