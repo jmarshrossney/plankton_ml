@@ -1,25 +1,29 @@
-name: cyto_39
+name: cyto_ml
 channels:
   - pytorch
   - conda-forge
-  - defaults
+channel_priority: flexible
 dependencies:
-  - python=3.9
-  - pytorch=1.10.0
-  - mkl=2024.0
-  - chromadb=0.5.3
+  - python=3.12
+  - pytorch
+  - black
+  - chromadb
+  - flake8
   - intake-xarray
-  - scikit-image
-  - scikit-learn
+  - intake=0.7
+  - isort
+  - jupyterlab
+  - jupytext
+  - matplotlib
   - pandas
   - pytest
   - python-dotenv
   - s3fs
-  - jupyterlab
-  - jupytext
+  - scikit-image
+  - scikit-learn
+  - xarray
   - pip
   - streamlit
   - plotly
   - pip:
-    - scivision
-    - git+https://github.com/alan-turing-institute/plankton-cefas-scivision@main
+    - git+https://github.com/jmarshrossney/resnet50-cefas

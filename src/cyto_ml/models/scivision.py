@@ -1,32 +1,6 @@
-from scivision import load_pretrained_model
-from scivision.io import PretrainedModel
 import torch
-import torchvision
+from torchvision.transforms.v2.functional import to_image, to_dtype
 from xarray import DataArray
-
-SCIVISION_URL = (
-    "https://github.com/alan-turing-institute/plankton-cefas-scivision"  # noqa: E501
-)
-
-
-def load_model(url: str):
-    """Load a scivision model from a URL, for example
-    https://github.com/alan-turing-institute/plankton-cefas-scivision
-    """
-    model = load_pretrained_model(url)
-    return model
-
-
-def truncate_model(model: PretrainedModel):
-    """
-    Accepts a scivision model wrapper and returns the pytorch model,
-    with its last fully-connected layer removed so that it returns
-    2048 features rather than a handle of label predictions
-    """
-    network = torch.nn.Sequential(
-        *(list(model._plumbing.model.pretrained_model.children())[:-1])
-    )
-    return network
 
 
 def prepare_image(image: DataArray):
@@ -39,12 +13,18 @@ def prepare_image(image: DataArray):
     image_numpy = image.to_numpy()
 
     # Convert the image data to a PyTorch tensor
-    tensor_image = torchvision.transforms.ToTensor()(image_numpy)
+    tensor_image = to_dtype(
+        to_image(image_numpy),  # permutes HWC -> CHW
+        torch.float32,
+        scale=True,  # rescales [0, 255] -> [0, 1]
+    )
+    assert torch.all((tensor_image >= 0.0) & (tensor_image <= 1.0))
 
-    # Check if the input is a single image or a batch
-    if len(tensor_image.shape) == 3:
+    if tensor_image.dim() == 3:
         # Single image, add a batch dimension
         tensor_image = tensor_image.unsqueeze(0)
+
+    assert tensor_image.dim() == 4
 
     return tensor_image
 
@@ -52,4 +32,5 @@ def prepare_image(image: DataArray):
 def flat_embeddings(features: torch.Tensor):
     """Utility function that takes the features returned by the model in truncate_model
     And flattens them into a list suitable for storing in a vector database"""
-    return list(features[0].squeeze(1).squeeze(1).detach().numpy().astype(float))
+    # TODO: this only returns the 0th tensor in the batch...why?
+    return features[0].detach().tolist()

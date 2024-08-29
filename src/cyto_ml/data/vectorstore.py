@@ -9,7 +9,7 @@ from chromadb.config import Settings
 
 logging.basicConfig(level=logging.INFO)
 # TODO make this sensibly configurable, not confusingly hardcoded
-STORE = os.path.join(os.path.abspath(os.path.dirname(__file__)), "../../vectors")
+STORE = os.path.join(os.path.abspath(os.path.dirname(__file__)), "../../../vectors")
 
 client = chromadb.PersistentClient(
     path=STORE,
